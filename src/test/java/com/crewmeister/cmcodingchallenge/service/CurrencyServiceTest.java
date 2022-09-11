@@ -30,6 +30,7 @@ class CurrencyServiceTest {
     static PodamFactory factory = new PodamFactoryImpl();
     private static List<CurrencyConversionRate> listOfMockCurrencyConversionRate;
     private static CurrencyConversionRate mockCurrencyConversionRate;
+    private static Integer amount;
 
     @Autowired
     private CurrencyService currencyService;
@@ -42,6 +43,7 @@ class CurrencyServiceTest {
         // create mock data
         listOfMockCurrencyConversionRate = factory.manufacturePojo(List.class, CurrencyConversionRate.class);
         mockCurrencyConversionRate = factory.manufacturePojo(CurrencyConversionRate.class);
+        amount =factory.manufacturePojo(Integer.class);
     }
 
     @Test
@@ -111,7 +113,6 @@ class CurrencyServiceTest {
         doReturn(true).when(currencyRepository).existsByCurrency(any());
 
         // ACT
-        Integer amount = 100;
         double amountInEuro = currencyService.calculateAmountInEuroForGivenDate(LocalDate.now(), "INR", amount);
 
         // ASSERT
@@ -127,7 +128,6 @@ class CurrencyServiceTest {
         doReturn(false).when(currencyRepository).existsByCurrency(any());
 
         // ACT
-        Integer amount = 100;
         double amountInEuro = currencyService.calculateAmountInEuroForGivenDate(LocalDate.now(), "INR", amount);
 
         // ASSERT
@@ -141,9 +141,6 @@ class CurrencyServiceTest {
         // ARRANGE
         doReturn(Collections.emptyList()).when(currencyRepository).findByDateAndCurrency(any(),any());
         doReturn(false).when(currencyRepository).existsByCurrency(any());
-
-        // ACT
-        Integer amount = 100;
 
         // ASSERT
         assertThatThrownBy(() -> {
@@ -159,7 +156,6 @@ class CurrencyServiceTest {
         mockCurrencyConversionRate.setConversionRate(0d);
         doReturn(Arrays.asList(mockCurrencyConversionRate)).when(currencyRepository).findByDateAndCurrency(any(),any());
         doReturn(false).when(currencyRepository).existsByCurrency(any());
-        Integer amount = 100;
 
         // ASSERT
         assertThatThrownBy(() -> {
@@ -167,5 +163,15 @@ class CurrencyServiceTest {
             currencyService.calculateAmountInEuroForGivenDate(LocalDate.now(), "INR", amount);
         }).isInstanceOf(Exception.class)
                 .hasMessage(Messages.MESSAGE_CORRUPT_DATA);
+    }
+
+    @Test
+    public void calculateAmountInEuroForGivenDate_WithInputCurrencyInvalid_ShouldThrowException() throws Exception {
+        // ASSERT
+        assertThatThrownBy(() -> {
+            // ACT
+            currencyService.calculateAmountInEuroForGivenDate(LocalDate.now(), "DUMMY", amount);
+        }).isInstanceOf(Exception.class)
+                .hasMessage(Messages.MESSAGE_INVALID_INPUT_CURRENCY);
     }
 }

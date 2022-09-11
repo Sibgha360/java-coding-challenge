@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "ffab0e24-e5d2-4a6f-9688-d91285ca2010",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8852734"
+	},
+	"item": [
+		{
+			"name": "Get Currencies",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/currencies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"currencies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Eu Fx Rates",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get Eu Fx Rate By Date",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get Amount in Euro",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

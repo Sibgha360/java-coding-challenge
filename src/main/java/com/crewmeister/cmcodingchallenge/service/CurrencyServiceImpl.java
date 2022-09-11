@@ -1,6 +1,7 @@
 package com.crewmeister.cmcodingchallenge.service;
 
 import com.crewmeister.cmcodingchallenge.config.Messages;
+import com.crewmeister.cmcodingchallenge.exception.BadRequestException;
 import com.crewmeister.cmcodingchallenge.exception.ResourceNotFoundException;
 import com.crewmeister.cmcodingchallenge.config.SpringBootConfiguration;
 import com.crewmeister.cmcodingchallenge.helper.Util;
@@ -48,6 +49,11 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public double calculateAmountInEuroForGivenDate(LocalDate date, String currency, Integer amount) throws Exception {
+        if (!Util.getAvailableCurrencies().containsKey(currency)) {
+            log.warn("Invalid input currency: {}", currency);
+            throw new BadRequestException(Messages.MESSAGE_INVALID_INPUT_CURRENCY);
+        }
+
         //only executes ones for every currency. For rest of the requests the data is fetched from the repository
         if (!currencyRepository.existsByCurrency(currency)) {
             log.warn("Populating the currency rates for: {}", currency);

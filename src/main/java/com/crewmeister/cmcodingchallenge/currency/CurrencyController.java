@@ -1,6 +1,5 @@
 package com.crewmeister.cmcodingchallenge.currency;
 
-import com.crewmeister.cmcodingchallenge.exception.BadRequestException;
 import com.crewmeister.cmcodingchallenge.exception.ResourceNotFoundException;
 import com.crewmeister.cmcodingchallenge.helper.Util;
 import com.crewmeister.cmcodingchallenge.model.CurrencyConversionRate;
@@ -31,33 +30,19 @@ public class CurrencyController {
     }
 
     @GetMapping("/euFxRates")
-    public ResponseEntity<ArrayList<CurrencyConversionRate>> getEuFxRates() throws ResourceNotFoundException {
-        ArrayList<CurrencyConversionRate> currencyConversionRates = new ArrayList<>();
-
-        for (CurrencyConversionRate rate : currencyService.findAllEuFxRates()) {
-            currencyConversionRates.add(rate);
-        }
-
-        return new ResponseEntity<ArrayList<CurrencyConversionRate>>(currencyConversionRates, HttpStatus.OK);
+    public ResponseEntity<List<CurrencyConversionRate>> getEuFxRates() throws ResourceNotFoundException {
+        List<CurrencyConversionRate> allEuFxRates = currencyService.findAllEuFxRates();
+        return new ResponseEntity<List<CurrencyConversionRate>>(allEuFxRates, HttpStatus.OK);
     }
 
     @GetMapping("/euFxRateByDay")
-    public ResponseEntity<ArrayList<CurrencyConversionRate>> getEuFxRatebyDay(@PathParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) throws ResourceNotFoundException {
-        ArrayList<CurrencyConversionRate> currencyConversionRates = new ArrayList<>();
-
-        for (CurrencyConversionRate usd : currencyService.findEuFxRateByDate(date)) {
-            currencyConversionRates.add(usd);
-        }
-        return new ResponseEntity<ArrayList<CurrencyConversionRate>>(currencyConversionRates, HttpStatus.OK);
+    public ResponseEntity<List<CurrencyConversionRate>> getEuFxRatebyDay(@PathParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) throws ResourceNotFoundException {
+        List<CurrencyConversionRate> euFxRateByDate = currencyService.findEuFxRateByDate(date);
+        return new ResponseEntity<List<CurrencyConversionRate>>(euFxRateByDate, HttpStatus.OK);
     }
 
     @GetMapping("/amountInEuroByDay")
     public ResponseEntity<Double> getAmountInEuroByDay(@PathParam("fromDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathParam("currency") String currency, @PathParam("amount") Integer amount) throws Exception {
-        if (!Util.getAvailableCurrencies().containsKey(currency)) {
-            log.warn("Invalid input currency: {}", currency);
-            throw new BadRequestException("Invalid input currency. See logs");
-        }
-
         double amountInEuro = currencyService.calculateAmountInEuroForGivenDate(date, currency, amount);
 
         //return the amount here
