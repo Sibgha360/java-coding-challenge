@@ -1,5 +1,6 @@
 package com.crewmeister.cmcodingchallenge.service;
 
+import com.crewmeister.cmcodingchallenge.config.Messages;
 import com.crewmeister.cmcodingchallenge.exception.ResourceNotFoundException;
 import com.crewmeister.cmcodingchallenge.config.SpringBootConfiguration;
 import com.crewmeister.cmcodingchallenge.helper.Util;
@@ -27,7 +28,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         if (byCurrency.isEmpty()) {
             log.warn("No Data exists for Currency : {}", Util.FX_CURRENCY);
-            throw new ResourceNotFoundException("There is no data for eu/fx currency rate. See Logs");
+            throw new ResourceNotFoundException(Messages.MESSAGE_NO_DATA);
         }
 
         return byCurrency;
@@ -39,7 +40,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         if (byDateAndCurrency.isEmpty()) {
             log.warn("No Data exists for Currency : {}", Util.FX_CURRENCY);
-            throw new ResourceNotFoundException("There is no data for eu/fx currency rate. See Logs");
+            throw new ResourceNotFoundException(Messages.MESSAGE_NO_DATA);
         }
 
         return byDateAndCurrency;
@@ -57,7 +58,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         if ( byDateAndCurrency.isEmpty()) {
             log.warn("No data exists. Currency: {}, Date: {}", currency, date);
-            throw new ResourceNotFoundException("No data exists for given date and currency. See logs");
+            throw new ResourceNotFoundException(Messages.MESSAGE_NO_DATA);
         }
 
         //there is just one index in the list
@@ -65,7 +66,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         if (currencyConversionRate.getConversionRate() == 0d) {
             log.warn("Corrupt data. Conversion rate {}: Currency: {}, Date: {}", currencyConversionRate.getConversionRate(), currency, date);
-            throw new Exception("Corrupt data for given currency and date. See logs");
+            throw new Exception(Messages.MESSAGE_CORRUPT_DATA);
         }
 
         //use the formula to convert one currency to Euro

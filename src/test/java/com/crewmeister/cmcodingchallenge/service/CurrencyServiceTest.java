@@ -1,5 +1,6 @@
 package com.crewmeister.cmcodingchallenge.service;
 
+import com.crewmeister.cmcodingchallenge.config.Messages;
 import com.crewmeister.cmcodingchallenge.exception.ResourceNotFoundException;
 import com.crewmeister.cmcodingchallenge.model.CurrencyConversionRate;
 import com.crewmeister.cmcodingchallenge.repository.CurrencyRepository;
@@ -30,15 +31,9 @@ class CurrencyServiceTest {
     private static List<CurrencyConversionRate> listOfMockCurrencyConversionRate;
     private static CurrencyConversionRate mockCurrencyConversionRate;
 
-    /**
-     * The service that we want to test.
-     */
     @Autowired
     private CurrencyService currencyService;
 
-    /**
-     * A mock version of the BookRepository for use in our tests.
-     */
     @MockBean
     private CurrencyRepository currencyRepository;
 
@@ -47,7 +42,6 @@ class CurrencyServiceTest {
         // create mock data
         listOfMockCurrencyConversionRate = factory.manufacturePojo(List.class, CurrencyConversionRate.class);
         mockCurrencyConversionRate = factory.manufacturePojo(CurrencyConversionRate.class);
-
     }
 
     @Test
@@ -60,12 +54,10 @@ class CurrencyServiceTest {
 
         // ASSERT
         assertThat(allEuFxRates)
-                .hasSize(listOfMockCurrencyConversionRate.size());
-
-        assertThat(allEuFxRates.get(0))
-                .isNotNull()
-                .isInstanceOf(CurrencyConversionRate.class)
-                .isEqualTo(listOfMockCurrencyConversionRate.get(0));
+                .isNotEmpty()
+                .hasSize(listOfMockCurrencyConversionRate.size())
+                .isInstanceOf(List.class)
+                .isSameAs(listOfMockCurrencyConversionRate);
     }
 
     @Test
@@ -78,7 +70,7 @@ class CurrencyServiceTest {
             // ACT
             currencyService.findAllEuFxRates();
         }).isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("There is no data for eu/fx currency rate. See Logs");
+                .hasMessage(Messages.MESSAGE_NO_DATA);
     }
 
     @Test
@@ -109,13 +101,13 @@ class CurrencyServiceTest {
             // ACT
             currencyService.findEuFxRateByDate(LocalDate.now());
         }).isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("There is no data for eu/fx currency rate. See Logs");
+                .hasMessage(Messages.MESSAGE_NO_DATA);
     }
 
     @Test
     public void calculateAmountInEuroForGivenDate_WhenCurrencyExistsInRepository_ShouldReturnValidAmount() throws Exception {
         // ARRANGE
-        doReturn(Arrays.asList(mockCurrencyConversionRate)).when(currencyRepository).findByDateAndCurrency(LocalDate.now(), "INR");
+        doReturn(Arrays.asList(mockCurrencyConversionRate)).when(currencyRepository).findByDateAndCurrency(any(), any());
         doReturn(true).when(currencyRepository).existsByCurrency(any());
 
         // ACT
@@ -131,7 +123,7 @@ class CurrencyServiceTest {
     @Test
     public void calculateAmountInEuroForGivenDate_WhenCurrencyDoesNotExistInRepository_ShouldReturnValidAmount() throws Exception {
         // ARRANGE
-        doReturn(Arrays.asList(mockCurrencyConversionRate)).when(currencyRepository).findByDateAndCurrency(LocalDate.now(), "INR");
+        doReturn(Arrays.asList(mockCurrencyConversionRate)).when(currencyRepository).findByDateAndCurrency(any(),any());
         doReturn(false).when(currencyRepository).existsByCurrency(any());
 
         // ACT
@@ -147,7 +139,7 @@ class CurrencyServiceTest {
     @Test
     public void calculateAmountInEuroForGivenDate_WhenNoConversionRateIsFound_ShouldThrowResourceNotFoundException() throws Exception {
         // ARRANGE
-        doReturn(Collections.emptyList()).when(currencyRepository).findByDateAndCurrency(LocalDate.now(), "INR");
+        doReturn(Collections.emptyList()).when(currencyRepository).findByDateAndCurrency(any(),any());
         doReturn(false).when(currencyRepository).existsByCurrency(any());
 
         // ACT
@@ -158,14 +150,14 @@ class CurrencyServiceTest {
             // ACT
             currencyService.calculateAmountInEuroForGivenDate(LocalDate.now(), "INR", amount);
         }).isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("No data exists for given date and currency. See logs");
+                .hasMessage(Messages.MESSAGE_NO_DATA);
     }
 
     @Test
     public void calculateAmountInEuroForGivenDate_WhenConversionRateIsZero_ShouldThrowException() throws Exception {
         // ARRANGE
         mockCurrencyConversionRate.setConversionRate(0d);
-        doReturn(Arrays.asList(mockCurrencyConversionRate)).when(currencyRepository).findByDateAndCurrency(LocalDate.now(), "INR");
+        doReturn(Arrays.asList(mockCurrencyConversionRate)).when(currencyRepository).findByDateAndCurrency(any(),any());
         doReturn(false).when(currencyRepository).existsByCurrency(any());
         Integer amount = 100;
 
@@ -174,6 +166,6 @@ class CurrencyServiceTest {
             // ACT
             currencyService.calculateAmountInEuroForGivenDate(LocalDate.now(), "INR", amount);
         }).isInstanceOf(Exception.class)
-                .hasMessage("Corrupt data for given currency and date. See logs");
+                .hasMessage(Messages.MESSAGE_CORRUPT_DATA);
     }
 }

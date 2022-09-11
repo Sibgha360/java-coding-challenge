@@ -24,6 +24,9 @@ public class Util {
 	public static String CSV_SPLITTER_BUNDESBANK_DATA = ";";
 	public static String CSV_LINE_SPLITTER_BUNDESBANK_DATA = "\r\n";
 
+	//the date/currency data starts after the defined line number
+	public static int CSV_DATA_OFFSET = 11;
+
 	public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_BUNDESBANK_DATA)
 			.withLocale(Locale.GERMANY);
 
@@ -113,7 +116,7 @@ public class Util {
 	public static ArrayList<CurrencyConversionRate> getCurrencyConversionRates(List<String> records, String currency) throws ParseException {
 		ArrayList<CurrencyConversionRate> currencyConversionRates = new ArrayList<>();
 
-		for (int n = 11; n < records.size(); n++) {
+		for (int n = CSV_DATA_OFFSET; n < records.size(); n++) {
 			String[] x = records.get(n).split(CSV_SPLITTER_BUNDESBANK_DATA);
 			if (x[1].equals(".")) {
 				continue;
