@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "ffab0e24-e5d2-4a6f-9688-d91285ca2010",
-		"name": "New Collection",
+		"name": "Foreign Currency Exchange Service",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "8852734"
 	},
@@ -12,14 +12,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/currencies",
-					"protocol": "http",
+					"raw": "{{BASE_URL}}/currencies",
 					"host": [
-						"localhost"
+						"{{BASE_URL}}"
 					],
-					"port": "8080",
 					"path": [
-						"api",
 						"currencies"
 					]
 				}
@@ -30,7 +27,16 @@
 			"name": "Get All Eu Fx Rates",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/euFxRates",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"euFxRates"
+					]
+				}
 			},
 			"response": []
 		},
@@ -38,7 +44,22 @@
 			"name": "Get Eu Fx Rate By Date",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/euFxRateByDay?date=1999-10-01",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"euFxRateByDay"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "1999-10-01"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -46,7 +67,30 @@
 			"name": "Get Amount in Euro",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/amountInEuroByDay?date=2020-01-08&currency=INR&amount=100",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"amountInEuroByDay"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2020-01-08"
+						},
+						{
+							"key": "currency",
+							"value": "INR"
+						},
+						{
+							"key": "amount",
+							"value": "100"
+						}
+					]
+				}
 			},
 			"response": []
 		}

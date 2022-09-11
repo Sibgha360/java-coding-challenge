@@ -15,6 +15,6 @@
 ````
 
 - Hit the http://localhost:8080/api/currencies to test if the service is up.
-- Import _/tools/CurrencyExchangeApi.postman_collection.json_ in the **Postman** for the end point specifications and sample requests.
+- Import _/tools/Local.postman_environment.json_ and _/tools/CurrencyExchangeApi.postman_collection.json_ in the **Postman** for the end point specifications and sample requests.
 
  
